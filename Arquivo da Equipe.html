@@ -1,0 +1,640 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Arquivo da Equipe</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: pastas na lateral (uma por operador e uma geral), documentos em grade à direita.
+   Cor: neutros frios com azul-tinta; tipos de documento ganham cor própria (verde, violeta, vermelho). */
+:root {
+  --bg: #F2F4F7;
+  --surface: #FFFFFF;
+  --fg: #1B2330;
+  --muted: #5B6676;
+  --line: #DCE1E8;
+  --accent: #23405F;
+  --accent-fg: #FFFFFF;
+  --accent-soft: #E3EAF2;
+  --fb-bg: #E1F3E8;  --fb-fg: #176A3D;
+  --at-bg: #ECE7FA;  --at-fg: #54379F;
+  --ad-bg: #FBE6E3;  --ad-fg: #A4251B;
+  --danger: #B42318;
+  --shadow: 0 1px 2px rgba(20, 30, 45, .06), 0 4px 14px rgba(20, 30, 45, .05);
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-head: "Space Grotesk", "Inter", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12161C; --surface: #1A2029; --fg: #E7EBF0; --muted: #98A3B3; --line: #2B3441;
+    --accent: #8FB0DB; --accent-fg: #0F1722; --accent-soft: #1F2B3B;
+    --fb-bg: #17301F; --fb-fg: #7FD3A0;
+    --at-bg: #2A2340; --at-fg: #B8A5F0;
+    --ad-bg: #3A1B19; --ad-fg: #F2958C;
+    --danger: #F2958C;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 14px rgba(0, 0, 0, .25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12161C; --surface: #1A2029; --fg: #E7EBF0; --muted: #98A3B3; --line: #2B3441;
+  --accent: #8FB0DB; --accent-fg: #0F1722; --accent-soft: #1F2B3B;
+  --fb-bg: #17301F; --fb-fg: #7FD3A0;
+  --at-bg: #2A2340; --at-fg: #B8A5F0;
+  --ad-bg: #3A1B19; --ad-fg: #F2958C;
+  --danger: #F2958C;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 14px rgba(0, 0, 0, .25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  padding-block: 20px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.app { max-width: 1180px; margin: 0 auto; }
+.top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; margin-bottom: 20px; }
+.top h1 { font-family: var(--font-head); font-size: 26px; line-height: 1.2; margin: 0; letter-spacing: -.01em; }
+.top p { margin: 0; color: var(--muted); font-size: 14px; }
+
+.layout { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 24px; align-items: start; }
+
+/* Pastas */
+.folders { display: flex; flex-direction: column; gap: 4px; position: sticky; top: 16px; }
+.folders .label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 10px 12px 4px; }
+.folder {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  background: transparent; border: 1px solid transparent; border-radius: 10px; padding: 9px 12px; min-width: 0;
+}
+.folder:hover { background: var(--surface); border-color: var(--line); }
+.folder[aria-current="true"] { background: var(--accent); color: var(--accent-fg); }
+.folder .ico {
+  flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent); font-family: var(--font-head); font-weight: 600; font-size: 13px;
+}
+.folder .ico.geral { border-radius: 9px; }
+.folder[aria-current="true"] .ico { background: rgba(255, 255, 255, .18); color: var(--accent-fg); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .folder[aria-current="true"] .ico { background: rgba(15, 23, 34, .16); } }
+:root[data-theme="dark"] .folder[aria-current="true"] .ico { background: rgba(15, 23, 34, .16); }
+.folder .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
+.folder .nome { font-weight: 500; font-size: 14px; overflow-wrap: anywhere; }
+.folder .sub { font-size: 12px; opacity: .72; }
+.folder .qtd { flex: none; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; opacity: .8; }
+
+/* Cabeçalho da pasta */
+.head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 16px; margin-bottom: 16px; }
+.head h2 { font-family: var(--font-head); font-size: 22px; line-height: 1.25; margin: 0; letter-spacing: -.01em; overflow-wrap: anywhere; }
+.head .sub { color: var(--muted); font-size: 13px; margin: 2px 0 0; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 16px;
+  border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-weight: 500;
+}
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.danger { color: var(--danger); }
+.btn[disabled] { opacity: .55; cursor: not-allowed; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 12px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--line); font-size: 13px; font-weight: 500;
+}
+.chip .n { font-variant-numeric: tabular-nums; color: var(--muted); font-weight: 600; }
+.chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.chip[aria-pressed="true"] .n { color: var(--accent); }
+.search {
+  flex: 1 1 200px; max-width: 280px; min-height: 36px; padding: 0 12px; border-radius: 10px;
+  border: 1px solid var(--line); background: var(--surface);
+}
+
+/* Grade de documentos */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+.card {
+  display: flex; flex-direction: column; text-align: left; padding: 0; min-width: 0; overflow: hidden;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow);
+}
+.card:hover { border-color: var(--muted); }
+.thumb { aspect-ratio: 4 / 3; max-width: 100%; background: var(--accent-soft); display: grid; place-items: center; color: var(--muted); overflow: hidden; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb svg { width: 34px; height: 34px; }
+.thumb .pdf { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; }
+.cbody { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cmeta { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ctitle { font-weight: 600; font-size: 14px; line-height: 1.3; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.cfoot { font-size: 12px; color: var(--muted); }
+
+.badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.badge.feedback { background: var(--fb-bg); color: var(--fb-fg); }
+.badge.ata { background: var(--at-bg); color: var(--at-fg); }
+.badge.advertencia { background: var(--ad-bg); color: var(--ad-fg); }
+
+.state { background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; padding: 36px 20px; text-align: center; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.state strong { color: var(--fg); font-family: var(--font-head); font-size: 17px; }
+.state p { margin: 0; max-width: 46ch; }
+
+/* Janelas */
+.overlay { position: fixed; inset: 0; z-index: 50; background: rgba(10, 15, 22, .55); display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding-block: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-bottom, 0px)); padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); }
+.sheet { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; width: 100%; max-width: 560px; padding: 20px; margin-block: auto; box-shadow: var(--shadow); }
+.sheet.wide { max-width: 760px; }
+.sheet h3 { font-family: var(--font-head); font-size: 19px; margin: 0 0 14px; line-height: 1.3; }
+.field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; min-width: 0; }
+.field label, .field .lbl { font-size: 13px; font-weight: 600; }
+.field input[type="text"], .field input[type="date"], .field select, .field textarea {
+  min-height: 40px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); width: 100%;
+}
+.field textarea { min-height: 84px; resize: vertical; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.drop { border: 1.5px dashed var(--line); border-radius: 12px; padding: 16px; background: var(--bg); display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.drop input[type="file"] { max-width: 100%; font-size: 13px; }
+.hint { font-size: 12px; color: var(--muted); margin: 0; }
+.picked { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; width: 100%; font-size: 13px; }
+.picked li { display: flex; justify-content: space-between; gap: 10px; min-width: 0; }
+.picked .fn { overflow-wrap: anywhere; min-width: 0; }
+.picked .sz { color: var(--muted); font-variant-numeric: tabular-nums; flex: none; }
+.actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+.msg { font-size: 13px; margin: 0 0 12px; padding: 10px 12px; border-radius: 10px; background: var(--ad-bg); color: var(--ad-fg); overflow-wrap: anywhere; }
+.msg.info { background: var(--accent-soft); color: var(--accent); }
+
+.vhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+.vhead .vt { min-width: 0; }
+.vhead h3 { margin: 6px 0 2px; }
+.vsub { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.obs { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--bg); border-radius: 10px; padding: 12px 14px; margin: 0 0 14px; font-size: 14px; }
+.vfiles { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+.vfile img { width: 100%; max-width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); display: block; }
+.vfile .cap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; font-size: 12px; color: var(--muted); margin-top: 6px; }
+.vfile a { color: var(--accent); font-weight: 600; }
+.pdfcard { display: flex; align-items: center; gap: 12px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+.pdfcard svg { flex: none; width: 30px; height: 30px; color: var(--ad-fg); }
+.pdfcard .pn { min-width: 0; overflow-wrap: anywhere; font-weight: 500; }
+
+@media (max-width: 820px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .folders { position: static; flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 6px; scrollbar-width: thin; }
+  .folders .label { display: none; }
+  .folder { flex: none; width: auto; background: var(--surface); border-color: var(--line); padding: 7px 12px 7px 8px; }
+  .folder .sub { display: none; }
+  .folder .nome { white-space: nowrap; }
+  .folder .ico { width: 28px; height: 28px; font-size: 11px; }
+  .top h1 { font-size: 22px; }
+  .row2 { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="app">
+  <header class="top">
+    <h1>Arquivo da Equipe</h1>
+    <p>Feedbacks, atas de orientação e advertências, uma pasta por operador.</p>
+  </header>
+  <div class="layout">
+    <nav class="folders" id="folders" aria-label="Pastas"></nav>
+    <main>
+      <section class="head" id="head"></section>
+      <div class="toolbar">
+        <div class="chips" id="chips" role="group" aria-label="Filtrar por tipo"></div>
+        <input class="search" id="busca" type="search" placeholder="Buscar nesta pasta" aria-label="Buscar nesta pasta">
+      </div>
+      <div id="list"></div>
+    </main>
+  </div>
+</div>
+
+<!-- Adicionar documento -->
+<div class="overlay" id="addOverlay" hidden>
+  <form class="sheet" id="addForm" role="dialog" aria-modal="true" aria-labelledby="addTitle" novalidate>
+    <h3 id="addTitle">Adicionar documento</h3>
+    <div id="addMsg"></div>
+    <div class="field">
+      <label for="fPasta">Pasta</label>
+      <select id="fPasta"></select>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="fTipo">Tipo</label>
+        <select id="fTipo">
+          <option value="feedback">Feedback</option>
+          <option value="ata">Ata de orientação</option>
+          <option value="advertencia">Advertência</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="fData">Data do documento</label>
+        <input type="date" id="fData">
+      </div>
+    </div>
+    <div class="field">
+      <label for="fTitulo">Título</label>
+      <input type="text" id="fTitulo" maxlength="120" placeholder="Ex.: Orientação sobre abordagem na renegociação">
+    </div>
+    <div class="field">
+      <label for="fObs">Observações</label>
+      <textarea id="fObs" maxlength="4000" placeholder="Resumo do que foi tratado, combinados e prazos (opcional)"></textarea>
+    </div>
+    <div class="field">
+      <span class="lbl">Fotos ou digitalizações</span>
+      <div class="drop">
+        <input type="file" id="fFiles" multiple accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,.jpg,.jpeg,.png,.webp,.gif,.pdf">
+        <ul class="picked" id="picked"></ul>
+        <p class="hint">JPG, PNG, WEBP, GIF ou PDF, até 20 MB cada. No celular, o botão permite tirar a foto na hora.</p>
+      </div>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn" id="addCancel">Cancelar</button>
+      <button type="submit" class="btn primary" id="addSave">Salvar documento</button>
+    </div>
+  </form>
+</div>
+
+<!-- Ver documento -->
+<div class="overlay" id="viewOverlay" hidden>
+  <div class="sheet wide" id="viewSheet" role="dialog" aria-modal="true" aria-labelledby="viewTitle"></div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var FOLDERS = [
+    { id: "geral",    nome: "Geral",                                curto: "Geral",       sub: "Equipe inteira", ini: "" },
+    { id: "jose",     nome: "José Deoclair Ribas Júnior",           curto: "José Deoclair", sub: "Operador",     ini: "JD" },
+    { id: "maria",    nome: "Maria Vitória Gregório de Brito",      curto: "Maria Vitória", sub: "Operadora",    ini: "MV" },
+    { id: "ana",      nome: "Ana Julia Lourenço Dzobaty",           curto: "Ana Julia",   sub: "Operadora",      ini: "AJ" },
+    { id: "luis",     nome: "Luis Gustavo Albuquerque Ramos",       curto: "Luis Gustavo", sub: "Operador",      ini: "LG" },
+    { id: "mariana",  nome: "Mariana Dranka Fernandes da Silva",    curto: "Mariana",     sub: "Operadora",      ini: "MD" }
+  ];
+  var TIPOS = { feedback: "Feedback", ata: "Ata de orientação", advertencia: "Advertência" };
+  var ORDEM_TIPOS = ["feedback", "ata", "advertencia"];
+  var ACEITOS = ["image/jpeg", "image/png", "image/webp", "image/gif", "application/pdf"];
+  var POR_EXT = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif", pdf: "application/pdf" };
+
+  var state = { docs: [], loaded: false, erro: "", pasta: "geral", tipo: "todos", busca: "", verId: null, confirmaExcluir: false, salvando: false };
+  var db = null, assets = null, loadTimer = null;
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function h(tag, props) {
+    var el = document.createElement(tag);
+    props = props || {};
+    for (var k in props) {
+      var v = props[k];
+      if (v == null || v === false) continue;
+      if (k === "class") el.className = v;
+      else if (k === "text") el.textContent = v;
+      else if (k.indexOf("on") === 0) el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? "" : v);
+    }
+    for (var i = 2; i < arguments.length; i++) {
+      var kids = [].concat(arguments[i]);
+      for (var j = 0; j < kids.length; j++) {
+        var c = kids[j];
+        if (c == null || c === false) continue;
+        el.append(c.nodeType ? c : document.createTextNode(String(c)));
+      }
+    }
+    return el;
+  }
+
+  var ICON_GRUPO = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.5-3.2 2.7-5 5.5-5s5 1.8 5.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16.5 14.2c2.4.1 3.9 1.6 4.3 4.3"/></svg>';
+  var ICON_ARQ = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>';
+  var ICON_PDF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M8.5 16.5v-4h1.4a1.3 1.3 0 0 1 0 2.6H8.5M12.5 16.5v-4h.9a2 2 0 0 1 0 4zM17 12.5h-1.6v4M16.2 14.5H17"/></svg>';
+  function svgEl(markup, cls) { var s = h("span", { class: cls || "" }); s.innerHTML = markup; return s; }
+
+  function pasta(id) { return FOLDERS.filter(function (f) { return f.id === id; })[0] || FOLDERS[0]; }
+  function fmtData(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
+    return m ? m[3] + "/" + m[2] + "/" + m[1] : "Sem data";
+  }
+  function hoje() {
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function fmtTam(b) {
+    if (b < 1024 * 1024) return Math.max(1, Math.round(b / 1024)) + " KB";
+    return (b / 1024 / 1024).toFixed(1).replace(".", ",") + " MB";
+  }
+  function tipoDoArquivo(f) {
+    if (f.type && ACEITOS.indexOf(f.type) >= 0) return f.type;
+    var ext = (f.name.split(".").pop() || "").toLowerCase();
+    return POR_EXT[ext] || "";
+  }
+  function msgErro(e) {
+    var c = e && e.code;
+    if (c === "too_large") return "arquivo maior que 20 MB";
+    if (c === "unsupported_type") return "formato não aceito";
+    if (c === "quota_or_state") return "o espaço de armazenamento da página está cheio";
+    if (c === "rate_limited") return "muitos envios seguidos, aguarde um instante";
+    if (c === "upstream_auth") return "sessão expirada, recarregue a página";
+    return "falha no envio";
+  }
+
+  /* ---------- Renderização ---------- */
+  function docsDaPasta(id) { return state.docs.filter(function (d) { return d.pasta === id; }); }
+
+  function renderPastas() {
+    var nav = $("folders");
+    nav.textContent = "";
+    nav.append(h("div", { class: "label", text: "Pastas" }));
+    FOLDERS.forEach(function (f) {
+      var n = docsDaPasta(f.id).length;
+      var ico = f.id === "geral" ? svgEl(ICON_GRUPO, "ico geral") : h("span", { class: "ico", text: f.ini });
+      var b = h("button", { type: "button", class: "folder", "aria-current": state.pasta === f.id ? "true" : null, onclick: function () { irPara(f.id); } },
+        ico,
+        h("span", { class: "txt" }, h("span", { class: "nome", text: f.nome }), h("span", { class: "sub", text: f.sub })),
+        h("span", { class: "qtd", text: state.loaded ? String(n) : "" })
+      );
+      nav.append(b);
+    });
+  }
+
+  function renderCabecalho() {
+    var f = pasta(state.pasta), head = $("head");
+    head.textContent = "";
+    var sub = f.id === "geral" ? "Orientações e documentos válidos para a equipe inteira" : "Documentos individuais de " + f.curto;
+    head.append(
+      h("div", {}, h("h2", { text: f.nome }), h("p", { class: "sub", text: sub })),
+      h("button", { type: "button", class: "btn primary", onclick: abrirAdicionar }, "+ Adicionar documento")
+    );
+  }
+
+  function renderChips() {
+    var box = $("chips"), todos = docsDaPasta(state.pasta);
+    box.textContent = "";
+    function chip(valor, rotulo, n) {
+      box.append(h("button", { type: "button", class: "chip", "aria-pressed": state.tipo === valor ? "true" : "false", onclick: function () { state.tipo = valor; renderChips(); renderLista(); } },
+        rotulo, h("span", { class: "n", text: state.loaded ? String(n) : "" })));
+    }
+    chip("todos", "Todos", todos.length);
+    ORDEM_TIPOS.forEach(function (t) { chip(t, TIPOS[t], todos.filter(function (d) { return d.tipo === t; }).length); });
+  }
+
+  function filtrados() {
+    var q = state.busca.trim().toLowerCase();
+    return docsDaPasta(state.pasta).filter(function (d) {
+      if (state.tipo !== "todos" && d.tipo !== state.tipo) return false;
+      if (!q) return true;
+      return ((d.titulo || "") + " " + (d.obs || "")).toLowerCase().indexOf(q) >= 0;
+    }).sort(function (a, b) {
+      var da = a.data || "", db_ = b.data || "";
+      if (da !== db_) return da < db_ ? 1 : -1;
+      return (b.criadoEm || "") < (a.criadoEm || "") ? -1 : 1;
+    });
+  }
+
+  function miniatura(d) {
+    var arqs = d.arquivos || [];
+    var img = arqs.filter(function (a) { return (a.tipo || "").indexOf("image/") === 0; })[0];
+    if (img) return h("div", { class: "thumb" }, h("img", { src: "/_blob/" + img.id, alt: "", loading: "lazy" }));
+    if (arqs.length) return h("div", { class: "thumb" }, h("div", { class: "pdf" }, svgEl(ICON_PDF), "PDF"));
+    return h("div", { class: "thumb" }, svgEl(ICON_ARQ));
+  }
+
+  function renderLista() {
+    var box = $("list");
+    box.textContent = "";
+    var f = pasta(state.pasta);
+    if (!db) {
+      box.append(h("div", { class: "state" }, h("strong", { text: "Armazenamento indisponível" }), h("p", { text: "Esta visualização não consegue guardar documentos. Abra a página pelo link do Claude, com a sua conta." })));
+      return;
+    }
+    if (state.erro) {
+      box.append(h("div", { class: "state" }, h("strong", { text: "Não foi possível carregar" }), h("p", { text: "Recarregue a página. Se continuar, verifique se você está com a conta que criou esta página." })));
+      return;
+    }
+    if (!state.loaded) {
+      box.append(h("div", { class: "state" }, h("p", { text: "Carregando documentos…" })));
+      return;
+    }
+    var todos = docsDaPasta(f.id), lista = filtrados();
+    if (!todos.length) {
+      box.append(h("div", { class: "state" },
+        h("strong", { text: "Nenhum documento em " + f.curto + " ainda" }),
+        h("p", { text: "Fotografe ou digitalize a advertência, a ata ou o feedback e adicione aqui. Cada pasta guarda o histórico completo." }),
+        h("button", { type: "button", class: "btn primary", onclick: abrirAdicionar }, "+ Adicionar o primeiro documento")));
+      return;
+    }
+    if (!lista.length) {
+      box.append(h("div", { class: "state" }, h("strong", { text: "Nada encontrado" }), h("p", { text: "Nenhum documento combina com o filtro ou a busca atual." })));
+      return;
+    }
+    var grid = h("div", { class: "grid" });
+    lista.forEach(function (d) {
+      var qtd = (d.arquivos || []).length;
+      grid.append(h("button", { type: "button", class: "card", onclick: function () { abrirDoc(d.id); } },
+        miniatura(d),
+        h("div", { class: "cbody" },
+          h("div", { class: "cmeta" }, h("span", { class: "badge " + d.tipo, text: TIPOS[d.tipo] || "Documento" }), h("span", { text: fmtData(d.data) })),
+          h("div", { class: "ctitle", text: d.titulo || (TIPOS[d.tipo] || "Documento") }),
+          h("div", { class: "cfoot", text: qtd ? qtd + (qtd === 1 ? " arquivo" : " arquivos") : "Somente anotação" })
+        )));
+    });
+    box.append(grid);
+  }
+
+  function render() {
+    renderPastas(); renderCabecalho(); renderChips(); renderLista();
+    if (state.verId) renderDoc();
+  }
+
+  /* ---------- Navegação ---------- */
+  function irPara(id) {
+    state.pasta = id; state.tipo = "todos"; state.busca = ""; $("busca").value = "";
+    try { if (location.hash.slice(1) !== id) location.hash = id; } catch (e) {}
+    render();
+  }
+  window.addEventListener("hashchange", function () {
+    var id = location.hash.slice(1);
+    if (id && id !== state.pasta && FOLDERS.some(function (f) { return f.id === id; })) { state.pasta = id; state.tipo = "todos"; state.busca = ""; $("busca").value = ""; render(); }
+  });
+  $("busca").addEventListener("input", function (e) { state.busca = e.target.value; renderLista(); });
+
+  /* ---------- Adicionar ---------- */
+  function abrirAdicionar() {
+    var sel = $("fPasta");
+    sel.textContent = "";
+    FOLDERS.forEach(function (f) { sel.append(h("option", { value: f.id, text: f.id === "geral" ? "Geral (equipe inteira)" : f.nome })); });
+    sel.value = state.pasta;
+    $("fTipo").value = "feedback";
+    $("fData").value = hoje();
+    $("fTitulo").value = ""; $("fObs").value = ""; $("fFiles").value = "";
+    renderEscolhidos();
+    var m = $("addMsg"); m.textContent = "";
+    if (!assets) m.append(h("p", { class: "msg", text: "Só quem edita esta página pode enviar arquivos. Abra com a conta dona da página." }));
+    $("addSave").disabled = !assets || !db;
+    $("addOverlay").hidden = false;
+    setTimeout(function () { $("fTitulo").focus(); }, 0);
+  }
+  function fecharAdicionar() { if (state.salvando) return; $("addOverlay").hidden = true; }
+  function renderEscolhidos() {
+    var ul = $("picked"), fs = [].slice.call($("fFiles").files || []);
+    ul.textContent = "";
+    fs.forEach(function (f) { ul.append(h("li", {}, h("span", { class: "fn", text: f.name }), h("span", { class: "sz", text: fmtTam(f.size) }))); });
+  }
+  $("fFiles").addEventListener("change", renderEscolhidos);
+  $("addCancel").addEventListener("click", fecharAdicionar);
+
+  function mostrarErro(txt) {
+    var m = $("addMsg"); m.textContent = "";
+    m.append(h("p", { class: "msg", text: txt }));
+  }
+
+  $("addForm").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    if (state.salvando || !db || !assets) return;
+    var files = [].slice.call($("fFiles").files || []);
+    var titulo = $("fTitulo").value.trim(), obs = $("fObs").value.trim();
+    var tipo = $("fTipo").value, data = $("fData").value, pastaId = $("fPasta").value;
+    if (!files.length && !obs && !titulo) { mostrarErro("Adicione pelo menos um arquivo, um título ou uma observação."); return; }
+    if (!data) { mostrarErro("Informe a data do documento."); return; }
+    var ruins = files.filter(function (f) { return !tipoDoArquivo(f); });
+    if (ruins.length) { mostrarErro("Formato não aceito: " + ruins.map(function (f) { return f.name; }).join(", ") + ". Use JPG, PNG, WEBP, GIF ou PDF. Fotos em HEIC precisam ser convertidas para JPG."); return; }
+    salvar(files, { pasta: pastaId, tipo: tipo, data: data, titulo: titulo || (TIPOS[tipo] + " de " + fmtData(data)), obs: obs });
+  });
+
+  async function salvar(files, meta) {
+    state.salvando = true;
+    var btn = $("addSave"); btn.disabled = true;
+    $("addMsg").textContent = "";
+    var enviados = [], falhas = [];
+    for (var i = 0; i < files.length; i++) {
+      btn.textContent = "Enviando " + (i + 1) + " de " + files.length + "…";
+      var f = files[i];
+      try {
+        var r = await assets.upload(f, { type: tipoDoArquivo(f) });
+        enviados.push({ id: r.id, nome: f.name, tipo: r.contentType, bytes: r.sizeBytes });
+      } catch (e) {
+        falhas.push(f.name + ": " + msgErro(e));
+        break;
+      }
+    }
+    if (falhas.length) {
+      for (var k = 0; k < enviados.length; k++) { try { await assets.delete(enviados[k].id); } catch (e) {} }
+      state.salvando = false; btn.disabled = false; btn.textContent = "Salvar documento";
+      mostrarErro("Nada foi salvo. " + falhas.join("; ") + ".");
+      return;
+    }
+    btn.textContent = "Salvando…";
+    try {
+      await db.collection("docs").add({
+        pasta: meta.pasta, tipo: meta.tipo, data: meta.data, titulo: meta.titulo, obs: meta.obs,
+        arquivos: enviados, criadoEm: new Date().toISOString()
+      });
+    } catch (e) {
+      for (var j = 0; j < enviados.length; j++) { try { await assets.delete(enviados[j].id); } catch (e2) {} }
+      state.salvando = false; btn.disabled = false; btn.textContent = "Salvar documento";
+      mostrarErro(e && e.code === "quota_exceeded" ? "O limite de registros da página foi atingido." : "Não foi possível salvar o registro. Tente de novo.");
+      return;
+    }
+    state.salvando = false; btn.textContent = "Salvar documento";
+    $("addOverlay").hidden = true;
+    if (meta.pasta !== state.pasta) irPara(meta.pasta);
+  }
+
+  /* ---------- Ver documento ---------- */
+  function abrirDoc(id) { state.verId = id; state.confirmaExcluir = false; $("viewOverlay").hidden = false; renderDoc(); }
+  function fecharDoc() { state.verId = null; $("viewOverlay").hidden = true; }
+
+  function renderDoc() {
+    var d = state.docs.filter(function (x) { return x.id === state.verId; })[0];
+    var sh = $("viewSheet");
+    if (!d) { fecharDoc(); return; }
+    sh.textContent = "";
+    var f = pasta(d.pasta);
+    var acoes = h("div", { class: "actions", style: "margin:0" });
+    if (state.confirmaExcluir) {
+      acoes.append(
+        h("button", { type: "button", class: "btn", onclick: function () { state.confirmaExcluir = false; renderDoc(); } }, "Manter"),
+        h("button", { type: "button", class: "btn danger", id: "confirmaDel", onclick: function () { excluir(d); } }, "Confirmar exclusão")
+      );
+    } else {
+      acoes.append(h("button", { type: "button", class: "btn danger", onclick: function () { state.confirmaExcluir = true; renderDoc(); } }, "Excluir"));
+    }
+    acoes.append(h("button", { type: "button", class: "btn", onclick: fecharDoc }, "Fechar"));
+
+    sh.append(h("div", { class: "vhead" },
+      h("div", { class: "vt" },
+        h("span", { class: "badge " + d.tipo, text: TIPOS[d.tipo] || "Documento" }),
+        h("h3", { id: "viewTitle", text: d.titulo || "Documento" }),
+        h("div", { class: "vsub", text: f.nome + " · " + fmtData(d.data) })
+      )
+    ));
+    if (state.confirmaExcluir) sh.append(h("p", { class: "msg", text: "Excluir apaga o registro e os arquivos enviados. Isso não pode ser desfeito." }));
+    if (d.obs) sh.append(h("p", { class: "obs", text: d.obs }));
+    var arqs = d.arquivos || [], box = h("div", { class: "vfiles" });
+    arqs.forEach(function (a) {
+      var url = "/_blob/" + a.id;
+      if ((a.tipo || "").indexOf("image/") === 0) {
+        box.append(h("div", { class: "vfile" },
+          h("img", { src: url, alt: a.nome || "Documento digitalizado" }),
+          h("div", { class: "cap" }, h("span", { text: a.nome || "" }), h("a", { href: url, target: "_blank", rel: "noopener", text: "Abrir em nova aba" }))));
+      } else {
+        box.append(h("div", { class: "vfile" }, h("div", { class: "pdfcard" }, svgEl(ICON_PDF),
+          h("div", { class: "pn", text: a.nome || "Documento PDF" }),
+          h("a", { href: url, target: "_blank", rel: "noopener", text: "Abrir PDF", style: "margin-left:auto;white-space:nowrap" }))));
+      }
+    });
+    if (arqs.length) sh.append(box);
+    sh.append(acoes);
+  }
+
+  async function excluir(d) {
+    if (!db) return;
+    var btn = $("confirmaDel"); if (btn) { btn.disabled = true; btn.textContent = "Excluindo…"; }
+    try {
+      await db.collection("docs").doc(d.id).delete();
+    } catch (e) {
+      state.confirmaExcluir = false; renderDoc();
+      $("viewSheet").prepend(h("p", { class: "msg", text: "Não foi possível excluir. Tente de novo." }));
+      return;
+    }
+    if (assets) {
+      var arqs = d.arquivos || [];
+      for (var i = 0; i < arqs.length; i++) { try { await assets.delete(arqs[i].id); } catch (e) {} }
+    }
+    fecharDoc();
+  }
+
+  /* ---------- Fechar com Esc ou clique fora ---------- */
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (!$("viewOverlay").hidden) fecharDoc(); else if (!$("addOverlay").hidden) fecharAdicionar();
+  });
+  $("viewOverlay").addEventListener("mousedown", function (e) { if (e.target === this) fecharDoc(); });
+  $("addOverlay").addEventListener("mousedown", function (e) { if (e.target === this) fecharAdicionar(); });
+
+  /* ---------- Início ---------- */
+  var inicial = location.hash.slice(1);
+  if (FOLDERS.some(function (f) { return f.id === inicial; })) state.pasta = inicial;
+  render();
+
+  (async function () {
+    try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }
+    try { assets = window.claude && window.claude.use ? await window.claude.use("assets") : null; } catch (e) { assets = null; }
+    if (!db) { render(); return; }
+    loadTimer = setTimeout(function () {
+      if (!state.loaded) { $("list").textContent = ""; $("list").append(h("div", { class: "state" }, h("p", { text: "Os documentos ainda não responderam. Verifique a conexão e aguarde." }))); }
+    }, 10000);
+    db.collection("docs").onSnapshot(function (snap) {
+      state.docs = snap.docs.map(function (d) { var o = d.data() || {}; o.id = d.id; return o; });
+      state.loaded = true; state.erro = "";
+      clearTimeout(loadTimer);
+      render();
+    }, function (err) {
+      state.erro = (err && err.code) || "erro"; clearTimeout(loadTimer); render();
+    });
+  })();
+})();
+</script>
+
+</body></html>
